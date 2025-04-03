@@ -93,7 +93,24 @@ function Category() {
     }
 
   }
+const videoFromCategoryDrag = async (e, video, category) => {
+  console.log(e);
+  console.log(video);
+  console.log(category);
+  e.dataTransfer.setData("videoDetails", JSON.stringify(video))
+  let newAllVideos = category.allVideos.filter((item) => item != video)
+  category.allVideos = newAllVideos
+  console.log(category);
+  const result = await updateCategoryApi(category.id, category)
+      //console.log(result);
+      if (result.status >= 200 && result.status < 300) {
+        setUpdateStatus(result.data)
+      }
 
+
+  
+  // e.dataTransfer.setData("categoryDetails", JSON.stringify(category))
+}
 
   useEffect(() => {
     getAllCategory()
@@ -112,8 +129,8 @@ function Category() {
               </div>
 
               {item?.allVideos?.map((video, index) => (
-                <div key={index}>
-                  <Videocard  video={video} isPresent={true} />
+                <div key={index} draggable onDragStart={(e)=>{videoFromCategoryDrag(e, video, item)}} >
+                  <Videocard  video={video} isPresent={true}  />
                 </div>
               ))}
 
